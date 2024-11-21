@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Log Viewer</title>
+  <style>
+    #log {
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+<h1>Live Chat log viewer</h1>
+<div id="log"></div>
+<script>
+  const logElement = document.getElementById('log');
+
+  const eventSource = new EventSource('/events');
+
+  eventSource.onmessage = function(event) {
+    logElement.innerHTML += `${event.data}<br>`;
+    logElement.scrollTop = logElement.scrollHeight; // Scroll to the bottom
+  };
+
+  eventSource.onerror = function(event) {
+    console.error('EventSource failed:', event);
+    if (event.target.readyState === EventSource.CLOSED) {
+      console.error('Connection closed');
+      eventSource.close();
+    }
+  };
+</script>
+</body>
+</html>
